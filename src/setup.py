@@ -22,12 +22,12 @@ async def setup_python():
     patch_turtle()
 
 
-namespace = {}  # use separate namespace to hide run_code, modules, etc.
-
 
 def run_code(code):
+    namespace = {}  # use separate namespace to hide run_code, modules, etc.
+    from pytuga import PytugaTranspyler
+    
 
-    from pytuga import exec, PytugaTranspyler
     """run specified code and return stdout and stderr"""
     pytugues = PytugaTranspyler(
         translations={
@@ -58,8 +58,8 @@ def run_code(code):
                 'ht': 'ht',
                 'está_para_baixo': 'isdown',
                 'é_visível': 'isvisible',
-                'deixou': 'left',
-                'lt': 'lt',
+                'esquerda': 'left',
+                'esq': 'lt',
                 'ao_clicar': 'onclick',
                 'arrastar': 'ondrag',
                 'no_lançamento': 'onrelease',
@@ -76,7 +76,7 @@ def run_code(code):
                 'direita': 'right',
                 'Redefinir': 'reset',
                 'modo_de_redimensionamento': 'resizemode',
-                'rt': 'rt',
+                'dir': 'rt',
                 'set': 'seth',
                 'inflexão': 'setheading',
                 'setpos': 'setpos',
@@ -90,7 +90,7 @@ def run_code(code):
                 'metamorfosear': 'shapetransform',
                 'fator_de_cisalhamento': 'shearfactor',
                 'showturtle': 'showturtle',
-                'Rapidez': 'speed',
+                'definir_velocidade': 'speed',
                 'rua': 'st',
                 'carimbo': 'stamp',
                 'inclinar': 'tilt',
@@ -109,13 +109,12 @@ def run_code(code):
     )
 
     try:
-        if 'from turtle import' in code or 'import turtle' in code:
-            code += '\nfrom turtle import *\ndone()'
-        exec(code, namespace)
+        code = 'from turtle import *\n' + code 
+        code += '\ndone()'
+        pytugues.exec(code, namespace)
     except Exception as e:
         traceback.format_exc()
         traceback.print_exc()
-
 
 def patch_turtle():
     """
