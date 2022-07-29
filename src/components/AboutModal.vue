@@ -28,22 +28,26 @@
               leave-to="opacity-0 scale-95"
             >
               <DialogPanel
-                class="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+                class="w-full max-w-xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
               >
                 <DialogTitle
                   as="h3"
                   class="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Pytuga Web
+                  Sobre o Pytuga Web
                 </DialogTitle>
                 <div class="mt-2">
                   <p class="text-sm text-gray-500">
-                    Trabalho de Conclusão de Curso pela Universidade de Brasília.
+                    Este projeto foi desenvolvido por Andrew Lucas como Trabalho
+                    de Conclusão de Curso do curso de Engenharia de Software
+                    pela Universidade de Brasília.
                   </p>
-                   <p class="text-sm text-gray-500">
-                    Desenvolvido por Andrew Lucas Guedes de Souza
+                  <p class="mt-2 text-sm text-gray-500">
+                    Repositório:
+                    <a href="https://github.com/andrewlucasgs/pytuga-web"
+                      >github.com/andrewlucasgs/pytuga-web</a
+                    >
                   </p>
-                 
                 </div>
 
                 <div class="mt-4">
@@ -76,14 +80,12 @@ import {
 
 const emit = defineEmits(["close"]);
 
-
 defineProps({
   isOpen: {
     type: Boolean,
     default: false,
   },
 });
-
 </script>
 
 <style lang="scss" scoped></style>

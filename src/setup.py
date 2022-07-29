@@ -1,10 +1,8 @@
-# from pytuga import PytugaTranspyler
-import sys
-import io
 import traceback
 from js import window, Object
 from pyodide import to_js
 import micropip
+
 
 
 async def setup_python():
@@ -12,11 +10,11 @@ async def setup_python():
         [
             'unidecode',
             'polib',
-            '/lazyutils-0.3.3-py3-none-any.whl',
-            '/transpyler-0.5.0-py3-none-any.whl',
-            '/colortools-0.1.2-py3-none-any.whl',
-            '/pytuga-0.13.0-py3-none-any.whl',
-            '/turtle-0.0.1-py3-none-any.whl'
+            VITE_BASE_PATH + 'lazyutils-0.3.3-py3-none-any.whl',
+            VITE_BASE_PATH + 'transpyler-0.5.0-py3-none-any.whl',
+            VITE_BASE_PATH + 'colortools-0.1.2-py3-none-any.whl',
+            VITE_BASE_PATH + 'pytuga-0.13.0-py3-none-any.whl',
+            VITE_BASE_PATH + 'turtle-0.0.1-py3-none-any.whl'
         ],
         keep_going=True)
     patch_turtle()
@@ -32,79 +30,7 @@ def run_code(code):
     pytugues = PytugaTranspyler(
         translations={
             **PytugaTranspyler.translations,
-            **{
-                'trás': 'back',
-                'trás': 'backward',
-                'trás': 'bk',
-                'círculo': 'circle',
-                'limpar': 'clear',
-                'cor': 'color',
-                'graus': 'degrees',
-                'distancia': 'distance',
-                'produto_escalar': 'dot',
-                'abaixar_caneta': 'down',
-                'frente': 'fd',
-                'definir_cor': 'fillcolor',
-                'frente': 'forward',
-                'get_poly': 'get_poly',
-                'getpen': 'getpen',
-                'obter_tela': 'getscreen',
-                'get_shapepoly': 'get_shapepoly',
-                'tartaruga': 'getturtle',
-                'vai_para': 'goto',
-                'cabeçalho': 'heading',
-                'tartaruga': 'hideturtle',
-                'casa': 'home',
-                'ht': 'ht',
-                'está_para_baixo': 'isdown',
-                'é_visível': 'isvisible',
-                'esquerda': 'left',
-                'esq': 'lt',
-                'ao_clicar': 'onclick',
-                'arrastar': 'ondrag',
-                'no_lançamento': 'onrelease',
-                'pd': 'pd',
-                'caneta': 'pen',
-                'caneta_cor': 'pencolor',
-                'pendurada': 'pendown',
-                'tamanho_de_caneta': 'pensize',
-                'penitenciária': 'penup',
-                'posição': 'pos',
-                'posição': 'position',
-                'pu': 'pu',
-                'radianos': 'radians',
-                'direita': 'right',
-                'Redefinir': 'reset',
-                'modo_de_redimensionamento': 'resizemode',
-                'dir': 'rt',
-                'set': 'seth',
-                'inflexão': 'setheading',
-                'setpos': 'setpos',
-                'posição_definida': 'setposition',
-                'ajustar_emaranhado': 'settiltangle',
-                'setundobuffer': 'setundobuffer',
-                'setx': 'setx',
-                'sety': 'sety',
-                'forma': 'shape',
-                'tamanho_da_forma': 'shapesize',
-                'metamorfosear': 'shapetransform',
-                'fator_de_cisalhamento': 'shearfactor',
-                'showturtle': 'showturtle',
-                'definir_velocidade': 'speed',
-                'rua': 'st',
-                'carimbo': 'stamp',
-                'inclinar': 'tilt',
-                'ângulo_de_inclinaçao': 'tiltangle',
-                'em_direção': 'towards',
-                'tamanho_de_tartaruga': 'turtlesize',
-                'desfazer': 'undo',
-                'desfazer_entradas_de_buffer': 'undobufferentries',
-                'acima': 'up',
-                'largura': 'width',
-                'escrever': 'write',
-                'xcor': 'xcor',
-                'ycor': 'ycor'
-            }
+            **tugalinhaTranslations
         }
     )
 

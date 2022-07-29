@@ -1,70 +1,61 @@
-<template>
-  <div ref="container" class="h-full"></div>
-</template>
-
-<script setup lang="ts">
-import { onMounted, ref, onUnmounted, toRefs } from "vue";
-import { useResizeObserver, useStorage, useDebounceFn } from "@vueuse/core";
-import * as monaco from "monaco-editor";
+<script setup>
+import { onMounted, ref, onUnmounted } from "vue";
+import { useResizeObserver, useDebounceFn } from "@vueuse/core";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.main.js";
 import pytugaLanguageSettings from "../utils/pytugaLanguageSettings";
-import pako from "pako";
-import { Base64 } from "js-base64";
+
+import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import { getInitialScript } from "../utils/getInitialScript";
+
+self.MonacoEnvironment = {
+  getWorker(workerId, label) {
+    return new EditorWorker();
+  },
+};
 
 const container = ref(null);
 
 let editor;
 
-const emit = defineEmits(["change", 'runCode']);
+const emit = defineEmits(["change", "runCode"]);
 onMounted(() => {
   pytugaLanguageSettings();
-  let value;
-  const url = new URL(window.location.href);
-  const script_key = "script";
 
-  if (url.searchParams.has(script_key)) {
-    let script = url.searchParams.get(script_key);
-    try {
-      script = pako.inflate(Base64.toUint8Array(script), { to: "string" });
-    } catch {
-      script = "";
-    }
-    value = script;
-  } else if (
-    window.localStorage != null &&
-    window.localStorage.getItem("codeBackup") !== null
-  ) {
-    value = window.localStorage.getItem("codeBackup");
-  } else {
-    value = "for i in range(10):\n    print(i)";
-  }
-  emit("change", value)
-
-  editor = monaco.editor.create(container.value!, {
-    value,
+  editor = monaco.editor.create(container.value, {
+    value: getInitialScript(),
     language: "pytuga",
     theme: "pytugaTheme",
     fontWeight: "bold",
   });
+  emit("change", editor.getValue());
+
   editor.onDidChangeModelContent(
     useDebounceFn(() => {
       emit("change", editor.getValue());
     }, 500)
   );
-  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function() {
+
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
     emit("change", editor.getValue());
-    emit('runCode')
+    emit("runCode");
   });
 });
 
 function setValue(value) {
-  editor.getModel().setValue(value);
+  editor.setValue(value);
+  emit("change", editor.getValue());
 }
 
 const editorObserver = useResizeObserver(container, () => {
   editor.layout();
 });
+
 onUnmounted(() => {
   editor?.dispose();
   editorObserver.stop();
 });
 </script>
+
+<template>
+  <div ref="container" class="h-full"></div>
+</template>

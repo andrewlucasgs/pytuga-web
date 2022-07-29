@@ -1,22 +1,48 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import HelpModal from "./HelpModal.vue";
+import { ref, defineAsyncComponent } from "vue";
+import pako from "pako";
+import { Base64 } from "js-base64";
 
-defineProps(["codeIsRunning"]);
+const LearnModal = defineAsyncComponent(() => import("./LearnModal.vue"));
+const AboutModal = defineAsyncComponent(() => import("./AboutModal.vue"));
 
-const isOpen = ref(false);
+const props = defineProps(["code", "codeIsRunning"]);
 
-function closeModal() {
-  isOpen.value = false;
-}
-function openModal() {
-  console.log("aspdjpasldjkl");
-  isOpen.value = true;
-}
+const downloadCode = () => {
+  const blob = new Blob([props.code], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "code.py";
+  link.click();
+};
+
+const shareCode = async () => {
+  const sharedCode = props.code.replace(/\r\n|\r|\n/g, "\r\n");
+  const url = new URL(window.location.href);
+  url.hash = "";
+  url.searchParams.delete("from"); 
+  let script;
+  try {
+    script = Base64.fromUint8Array(pako.deflate(sharedCode), true);
+  } catch {
+    // fallback
+    script = encodeURIComponent(sharedCode)
+      .replace(/\(/g, "%28")
+      .replace(/\)/g, "%29");
+  }
+  url.searchParams.set("script", script);
+  await navigator.clipboard.writeText(url.href);
+};
+
+const isLearnOpen = ref(false);
+const isAboutOpen = ref(false);
+
 </script>
 <template>
   <div class="h-screen w-16 bg-[#44475a]">
-    <HelpModal :isOpen="isOpen" @close="closeModal" />
+    <LearnModal :isOpen="isLearnOpen" @close="isLearnOpen = false" />
+    <AboutModal  :isOpen="isAboutOpen" @close="isAboutOpen = false" />
     <div class="h-full">
       <div
         class="text-gray-400 bg-[#f8f8f2] p-2 border-[#44475a] border-4 rounded-full"
@@ -51,7 +77,7 @@ function openModal() {
         <svg
           v-else
           xmlns="http://www.w3.org/2000/svg"
-         class="animate-spin transform rotate-180 h-auto w-full"
+          class="animate-spin transform rotate-180 h-auto w-full"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -65,7 +91,7 @@ function openModal() {
         </svg>
       </button>
       <button
-        @click="$emit('share')"
+        @click="shareCode"
         class="text-gray-400 hover:border-l-[#bd93f9] border-l-transparent border-l-4 hover:text-white hover:bg-[#282a36] p-2 rounded-sm"
         title="Compartilhar código"
       >
@@ -84,7 +110,7 @@ function openModal() {
         </svg>
       </button>
       <button
-        @click="$emit('download')"
+        @click="downloadCode"
         class="text-gray-400 hover:border-l-[#bd93f9] border-l-transparent border-l-4 hover:text-white hover:bg-[#282a36] p-2 rounded-sm"
         title="Baixar código"
       >
@@ -104,9 +130,9 @@ function openModal() {
         </svg>
       </button>
       <button
-        @click="openModal"
+        @click="isLearnOpen = true"
         class="text-gray-400 hover:border-l-[#bd93f9] border-l-transparent border-l-4 hover:text-white hover:bg-[#282a36] p-2 rounded-sm"
-        title="Ajuda"
+        title="Aprenda"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +155,7 @@ function openModal() {
       </button>
 
       <button
-        @click="openModal"
+        @click="isAboutOpen = true"
         class="text-gray-400 hover:border-l-[#bd93f9] border-l-transparent border-l-4 hover:text-white hover:bg-[#282a36] p-2 rounded-sm"
         title="Ajuda"
       >
