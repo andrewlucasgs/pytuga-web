@@ -9,6 +9,7 @@ import pako from "pako";
 import { Base64 } from "js-base64";
 import { useMagicKeys } from "@vueuse/core";
 import HelpModal from "./HelpModal.vue";
+import Split from "split.js";
 
 async function setup_pyodide() {
   let setup_code = pythonSetup;
@@ -17,8 +18,16 @@ async function setup_pyodide() {
 
 const output = ref([]);
 const code = ref("mostre('Hello World')");
-const pythonIsLoaded = ref(false);
+const codeIsRunning = ref(true);
 onMounted(async () => {
+  Split(["#split-h1", "#split-h2"], {
+    minSize: 10,
+  });
+  Split(["#split-v1", "#split-v2"], {
+    direction: "vertical",
+    minSize: 10,
+  });
+
   if (!window.pyodide) {
     window.pyodide = await window.loadPyodide({
       indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
@@ -29,30 +38,31 @@ onMounted(async () => {
     await setup_pyodide();
   }
   console.log("setup done");
-  pythonIsLoaded.value = true;
+  codeIsRunning.value = false;
 });
 
 const runPython = async () => {
-  if(!pythonIsLoaded.value) {
-    console.log('not yet')
+  if (codeIsRunning.value) {
+    console.log("wait");
     setTimeout(() => {
       runPython();
     }, 100);
-    return
+    return;
   }
+  codeIsRunning.value = true;
+
   output.value = [];
   const run_code = await window.pyodide.globals.get("run_code");
-  run_code(code.value);
+  await run_code(code.value);
+  codeIsRunning.value = false;
 };
 
-
-const keys = useMagicKeys()
-const CtrlEnter = keys['Ctrl+Enter']
+const keys = useMagicKeys();
+const CtrlEnter = keys["Ctrl+Enter"];
 
 watch(CtrlEnter, (v) => {
-  if (v)
-    runPython()
-})
+  if (v) runPython();
+});
 
 const appendOutput = (text) => {
   output.value = [...output.value, text];
@@ -60,7 +70,6 @@ const appendOutput = (text) => {
 window.customDispatchEvent = (eventName, data) => {
   const event = new CustomEvent(eventName, { detail: data });
   document.dispatchEvent(event);
-  
 };
 
 const editorInit = (editor) => {
@@ -103,20 +112,28 @@ const shareCode = () => {
 
 <template>
   <div class="h-screen w-screen flex">
-    <Menu @runCode="runPython" @download="downloadCode" @share="shareCode" />
-    <div class="bg-[#282a36] w-full flex p-5 gap-5">
+    <Menu
+      :codeIsRunning="codeIsRunning"
+      @runCode="runPython"
+      @download="downloadCode"
+      @share="shareCode"
+    />
+    <div class="bg-[#282a36] w-full flex p-5 gap-1 overflow-hidden">
       <div
+        id="split-h1"
         class="bg-green-600 rounded-lg border-2 border-[#f8f8f2] overflow-hidden w-1/2"
       >
         <MonacoEditor @runCode="runPython" @change="onChange" />
       </div>
-      <div class="flex flex-col w-1/2 gap-5">
+      <div id="split-h2" class="flex flex-col w-1/2 gap-1 overflow-hidden">
         <div
-          class="bg-blue-600 rounded-lg border-2 border-[#f8f8f2] overflow-hidden h-1/2 overflow-auto"
+          id="split-v1"
+          class="bg-blue-600 rounded-lg border-2 border-[#f8f8f2] overflow-hidden h-1/2"
         >
           <Terminal :output="output" />
         </div>
         <div
+          id="split-v2"
           class="bg-[#f8f8f2] rounded-lg border-2 border-[#f8f8f2] h-1/2 overflow-auto"
         >
           <Screen />
