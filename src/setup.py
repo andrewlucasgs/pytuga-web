@@ -22,11 +22,10 @@ async def setup_python():
 
 
 def run_code(code):
-    namespace = {}  # use separate namespace to hide run_code, modules, etc.
+    namespace = {} 
     from pytuga import PytugaTranspyler
     
 
-    """run specified code and return stdout and stderr"""
     pytugues = PytugaTranspyler(
         translations={
             **PytugaTranspyler.translations,
