@@ -26,6 +26,9 @@ After install dependencies, run:
 npm run dev
 ```
 
+Open your browser and go to `localhost:3000`.
+
+
 ## Build
 
 After install dependencies, run:
@@ -38,7 +41,6 @@ npm run build
 ## Deploy
 After build, you can deploy the built content in the dist directory to any static file server
 
-Open your browser and go to `localhost:3000`.
 
 
 
