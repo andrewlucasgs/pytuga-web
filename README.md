@@ -1,7 +1,51 @@
-# Vue 3 + Vite
+# Pytuga Web
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+# What is Pytuga Web?
+Pytuga Web is a web version of the Pytuguês editor and interpreter called [Pytuga](https://github.com/Transpyler/pytuga). Pytuguês allows users to write code in Portuguese using Python syntax (you can also use Python within it). 
 
-## Recommended IDE Setup
+Pytuga Web is used for teaching and learn programming without having to install anything. All you need is an up-to-date browser and an Internet connection.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+You can start using Pytuga Web at:
+https://andrewlucasgs.github.io/pytuga-web/
+
+
+## Install dependencies
+
+
+``` bash
+# install dependencies
+npm install
+```
+
+# Development
+After install dependencies, run:
+
+``` bash
+npm run dev
+```
+
+## Build
+
+After install dependencies, run:
+
+``` bash
+# build for production with minification
+npm run build
+```
+
+## Deploy
+After build, you can deploy the built content in the dist directory to any static file server
+
+Open your browser and go to `localhost:3000`.
+
+
+
+# How to contribute
+
+1. Fork this repo
+2. Make your changes
+3. Create a pull request
+
+# License
+
+GNU General Public License v3.0
